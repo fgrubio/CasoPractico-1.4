@@ -4,7 +4,6 @@ version = 0.1
 [default.deploy.parameters]
 stack_name = "todo-list-aws"
 #s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-upt09go84tay"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-mztyiikg0v4x"
 s3_prefix = "todo-list-aws"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
@@ -16,12 +15,11 @@ image_repositories = []
 [staging.deploy.parameters]
 stack_name = "staging-todo-list-aws"
 #s3_bucket = "aws-sam-cli-managed-staging-samclisourcebucket-upt09go84tay"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-mztyiikg0v4x"
 s3_prefix = "staging-todo-list-aws"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "Stage=\"staging\""
 image_repositories = []
-#resolve_s3 = true
+resolve_s3 = true
 confirm_changeset = true
 
 
@@ -32,7 +30,6 @@ region = "us-east-1"
 [production.deploy.parameters]
 stack_name = "todo-list-aws-production"
 #s3_bucket = "aws-sam-cli-managed-staging-samclisourcebucket-upt09go84tay"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-mztyiikg0v4x"
 s3_prefix = "todo-list-aws"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
