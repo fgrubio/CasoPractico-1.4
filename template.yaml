@@ -4,7 +4,7 @@ Description: >
   todo-list-aws
 
   Application TODO-LIST with SAM format
-
+ 
 # Parameters
 Parameters:
   Stage:
