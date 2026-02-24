@@ -48,15 +48,19 @@ pipeline {
         
         stage ('Promote') {
             steps{
-                 sh '''
+                sh '''
                         git fetch origin
 
                         git checkout master
                         git reset --hard origin/master
                         git merge --no-ff origin/develop -m "Hacemos el merge de develop en master"
 
+                '''
+                withCredentials([gitUsernamePassword(credentialsId:jenkins-github)]){
+                    sh '''    
                         git push origin master
-                 '''
+                    '''
+                } 
             }
         }
     }
