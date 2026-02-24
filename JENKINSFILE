@@ -49,10 +49,13 @@ pipeline {
         stage ('Promote') {
             steps{
                  sh '''
-                     git add .
-                     git commit -m "Commit a la rama develop"
-                     git checkout master
-                     git merge develop
+                        git fetch origin
+
+                        git checkout master
+                        git reset --hard origin/master
+                        git merge --no-ff origin/develop -m "Hacemos el merge de develop en master"
+
+                        git push origin master
                  '''
             }
         }
