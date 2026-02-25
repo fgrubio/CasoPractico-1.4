@@ -56,7 +56,7 @@ pipeline {
                     git merge --no-ff origin/develop -m "Hacemos el merge de develop en master"
 
                 '''
-                withCredentials([gitUsernamePassword(credentialsId:jenkins-github)]){
+                withCredentials([gitUsernamePassword(credentialsId:'jenkins-github')]){
                     sh '''    
                         git push origin master
                     '''
