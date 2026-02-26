@@ -53,6 +53,7 @@ pipeline {
 
                     git checkout master
                     git reset --hard origin/master
+                    git config merge.ours.driver true
                     git merge --no-ff origin/develop -m "Hacemos el merge de develop en master"
 
                 '''
