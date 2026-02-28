@@ -40,8 +40,9 @@ pipeline {
                     echo "$BASE_URL"
                     sh """
                         export BASE_URL=${BASE_URL}
-                        pytest test/integration/todoApiTest.py
+                        pytest --junitxml=result-rest.xml test/integration/todoApiTest.py
                     """
+                    junit healthScaleFactor: 0.0, testResults: 'result-rest.xml'
                 }
             }
         }
