@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        
+        stage('Get Code') {
+            steps {
+                // Obtener código del repo
+                git branch: 'master',
+                    url: 'https://github.com/fgrubio/CasoPractico-1.4.git'
+            }
+        }
+        
+        stage('Deploy') {
+            steps{
+                sh'''
+                    sam build
+                    sam deploy --config-env "production" --no-fail-on-empty-changeset
+                '''
+            }
+        }
+        
+        stage('Rest Test') {
+            steps{
+                script {
+                    def BASE_URL = sh( script: "aws cloudformation describe-stacks --stack-name todo-list-aws-production --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
+                        returnStdout: true)
+                    echo "$BASE_URL"
+                    sh """
+                        export BASE_URL=${BASE_URL}
+                        pytest --junitxml=result-rest.xml test/integration/todoApiTest.py -m prod
+                    """
+                    junit healthScaleFactor: 0.0, testResults: 'result-rest.xml'
+                }
+            }
+        }
+    }
+}
