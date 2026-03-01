@@ -2,29 +2,46 @@ pipeline {
     agent any
 
     stages {
-        
+
         stage('Get Code') {
             steps {
                 // Obtener código del repo
+                sh 'whoami'
+                sh 'hostname'
                 git branch: 'master',
                     url: 'https://github.com/fgrubio/CasoPractico-1.4.git'
+                stash name:'code', includes:'**'
             }
         }
         
         stage('Deploy') {
             steps{
+                unstash name:'code'
+                sh 'whoami'
+                sh 'hostname'
                 sh'''
                     sam build
                     sam deploy --config-env "production" --no-fail-on-empty-changeset
                 '''
+                script {
+                    def BASE_URL = sh( script: "aws cloudformation describe-stacks --stack-name todo-list-aws-production --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
+                        returnStdout: true)
+                    writeFile file: 'base_url.txt', text: BASE_URL
+                }
+                
+                stash name: 'base-url-stash', includes: 'base_url.txt'
             }
         }
         
         stage('Rest Test') {
+            agent {label 'agente2'}
             steps{
+                unstash name:'code'
+                unstash name:'base-url-stash'
+                sh 'whoami'
+                sh 'hostname'
                 script {
-                    def BASE_URL = sh( script: "aws cloudformation describe-stacks --stack-name todo-list-aws-production --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
-                        returnStdout: true)
+                    def BASE_URL = readFile('base_url.txt').trim()
                     echo "$BASE_URL"
                     sh """
                         export BASE_URL=${BASE_URL}
