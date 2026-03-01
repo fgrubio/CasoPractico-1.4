@@ -8,6 +8,8 @@ pipeline {
                 // Obtener código del repo
                 git branch: 'master',
                     url: 'https://github.com/fgrubio/CasoPractico-1.4.git'
+
+                sh 'wget https://raw.githubusercontent.com/fgrubio/todo-list-aws-config/refs/heads/production/samconfig.toml'
             }
         }
         
